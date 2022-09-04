@@ -1,0 +1,101 @@
+﻿@page "/R_Ocupaciones"
+@page "/R_Ocupaciones/{OcupacionId:int}"
+@using RegistroOcupaciones.DAL
+@using RegistroOcupaciones.Models
+@using RegistroOcupaciones.BLL
+
+
+<h3>Registro de Ocupaciones</h3>
+
+<EditForm Model="ocupacion" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header"> </div>
+        <div class="card-body">
+        </div>
+    </div>
+</EditForm>
+
+<form>
+    @*OcupacionId*@
+    <div class="form-row align-items-center"></div>
+    @*Descripcion*@
+    <div class="form-group"></div>
+    @*Salario*@
+    <div class="form-group">
+        <label>Salario</label>
+        @*<InputNumber @bind-Value="ocupacion.Salario" class="form-control" />*@
+    </div>
+    <div class="form-group">
+        <label>ID</label>
+         <InputNumber class="form-control" @bind-Value="ocupacion.OcupacionId"/>
+          <ValidationMessage For="@(() => ocupacion.OcupacionId)" />
+    </div>
+</form>
+
+
+<div class="card-footer">
+    <div class="form-group text-center" display: inline-block>
+        <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo">Nuevo</button>
+        <button type="submit" class="btn btn-lg btn-sucess">Guardar</button>
+        <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar">Eliminar</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int OcupacionId { get; set; }
+
+    public Ocupaciones ocupacion { get; set; } = new Ocupaciones();
+    [Inject]
+    public OcupacionesBLL ocupacionesBLL { get; set; }
+    protected override void OnInitialized()
+    {
+        Nuevo();
+
+        Buscar();
+    }
+
+    public void Nuevo()
+    {
+        ocupacion = new Ocupaciones();
+    }
+
+    private void Buscar()
+    {
+        if (ocupacion.OcupacionId > 0)
+        {
+            var encontrado = ocupacionesBLL.Buscar(ocupacion.OcupacionId);
+
+            if (encontrado != null)
+                this.ocupacion = encontrado;
+            else
+            {
+
+            }
+            // toast.ShowWarning("No encontrado");
+        }
+    }
+    public void Guardar()
+    {
+        bool guardo;
+
+        ocupacion.OcupacionId = 1;
+        guardo = ocupacionesBLL.Guardar(ocupacion);
+
+        if (guardo)
+        {
+            Nuevo();
+            //toast.ShowSucess("Guardo correctamente");
+        }
+        else
+        {
+
+        }
+        // toast.ShowError("No fue posible guardar");
+    }
+    public void Eliminar()
+    {
+
+    }
+}
